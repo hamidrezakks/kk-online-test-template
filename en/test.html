@@ -1,0 +1,899 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <link rel="stylesheet" href="../css/test.css" >
+    <link rel="stylesheet" href="../css/fonts.css" >
+    <link href="../css/froala/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="../css/froala/froala_editor.min.css" rel="stylesheet" type="text/css">
+  	<link href="../css/froala/froala_style.min.css" rel="stylesheet" type="text/css">
+    <script src="../js/jquery-2.1.1.min.js" type="text/javascript" ></script>
+    <script src="../js/jquery.animate-colors-min.js" type="text/javascript" ></script>
+    <script src="../js/jquery.easing.1.3.js"></script>
+    <script src="../js/jquery.slimscroll.js" ></script>
+    <!--<script src="../js/jquery.mousewheel.min.js" ></script>-->
+    <title>test page</title>
+</head>
+
+<body>
+<div style="width: 1000px;padding:10px;display:none;font-size:15px;" id="temp-container">
+</div>
+</div>
+	<div id="add-question" >
+    	EDIT QUESTION!!!
+    </div>
+<div id="add-question-layout" >
+	<div class="form" >
+    	<span class="close">
+        X
+        </span>
+        <div style="margin-top: 30px;" >
+            <div id="addq-scroll" >
+                <div id="question-edit" >
+              	</div>
+			</div>
+		</div>
+    </div>
+</div>
+<div id="question-pagination" >
+	<div class="filter close">
+    	<div class="cont" >
+        	<div class="sign1"></div>
+            <div class="sign2"></div>
+            <div class="sign3"></div>
+            <div class="sign4"></div>
+        </div>
+        <div class="arrow" >
+        </div>
+    </div>
+    <div class="title close" >
+        P
+   	</div>
+    <div class="toggle" >
+    	<div></div>
+    </div>
+    <div id="pagination-container">
+    	<div class="pgscroll"></div>
+    </div>
+</div>
+<div id="light-on-off" class="off" >
+	<div></div>
+</div>
+<div id="question-overlay">
+	<div class="row1" >
+    	<div class="col1 overlaybg" ></div>
+        <div class="col2 overlaybg" ></div>
+        <div class="col3 overlaybg" ></div>
+    </div>
+    <div class="row2" >
+    	<div class="col1 overlaybg" ></div>
+        <div class="col2" >
+        	<div class="timer" id="question-timer" ><div>00:00:0</div></div>
+            <div id="inq-sign-container" >
+                <div class="sign1" ><div></div></div>
+                <div class="sign2" ><div></div></div>
+                <div class="sign3" ><div></div></div>
+                <div class="sign4" ><div></div></div>
+            </div>
+        </div>
+        <div class="col3 overlaybg" ></div>
+    </div>
+    <div class="row3" >
+    	<div class="col1 overlaybg" ></div>
+        <div class="col2 overlaybg" ></div>
+        <div class="col3 overlaybg" ></div>
+    </div>
+</div>
+<div id="main-container">
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+  <div class="q-container"><div class="container" ></div></div>
+</div>
+    <script src="../js/froala/froala_editor.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="../../js/froala_editor_ie8.min.js"></script>
+    <![endif]-->
+<script src="../js/froala/plugins/tables.min.js"></script>
+<script src="../js/froala/plugins/lists.min.js"></script>
+<script src="../js/froala/plugins/colors.min.js"></script>
+<script src="../js/froala/plugins/font_family.min.js"></script>
+<script src="../js/froala/plugins/font_size.min.js"></script>
+	<script src="../js/froala/plugins/block_styles.min.js"></script>
+<script>
+		function setPageLaypout(){
+			var bHeight = $(window).height();
+			if(bHeight > 1080) bHeight = 1080;
+			$("#main-container").height(bHeight+"px").css({'overflow':'hidden'});
+		}
+		var qCache;
+		var editor;
+		var questionCount = 0;
+		var questionObj;
+		var questionList = new Array();
+		//qid - qurl - qpage - qnum - qtimer - qanswer
+		var timerThreshold;
+		var mainInterval;
+		var currentEnableQuestionTimer = -1;
+		var eventLogList = new Array();
+		var lastQuestion = 0;
+		//qnum ,
+		//mode 0->entered, 1->answer, 2->sign, 3->time
+		//
+		$(window).load(function(e) {			
+			iniQuestionData();
+			
+			setQuestion(1);
+			setTimeout(function(){
+			gotoQuestion(1,true);
+			},100);
+
+			setPageLaypout();
+			
+			$('#question-edit').editable({
+				imageUploadURL: 'upload_image.php',
+				imageUploadParam: "userfile",
+				alwaysVisible: true
+				 });
+			
+			$("#addq-scroll").slimScroll({
+				height: '530px'
+			});
+			
+			$("#question-pagination > #pagination-container > .pgscroll").slimScroll({
+				height: $("#question-pagination > #pagination-container").height()+"px",
+				position: 'left',
+				railVisible: true,
+			    alwaysVisible: false
+			});
+			
+			$("#question-overlay > .row1 > .col2 ").click(function(){
+				prevQuestion();
+			});
+			
+			$("#question-overlay > .row3 > .col2 ").click(function(){
+				nextQuestion();
+			});
+			
+			
+		});
+		$(window).resize(function(e) {
+			setPageLaypout();
+			gotoQuestion(currentQuestion+1,true);
+		});
+		var cuurentQuestion;
+		
+		var currentTime = 0, lastTime=0;
+		var startQuestion = false;
+		function addLog(mode)
+		{
+			switch(mode)
+			{
+				default:
+				case 'start' :
+					lastTime = currentTime;
+					startQuestion = true;
+					eventLogList.push({qnum: lastQuestion+1, qmode: 0, val: currentTime});
+					break;
+				case 'answer' :
+					var answ = questionList[currentQuestion].qanswer;
+					eventLogList.push({qnum: currentQuestion+1, qmode: 1, val: answ});
+					break;
+				case 'sign' :
+					var sign = questionList[currentQuestion].qsign;
+					eventLogList.push({qnum: currentQuestion+1, qmode: 2, val: sign});
+					break;
+				case 'end' :
+					if(startQuestion)
+					{
+						var sTime = currentTime - lastTime;
+						eventLogList.push({qnum: currentQuestion+1, qmode: 3, val: sTime});
+						startQuestion = false;
+					}
+					break;
+			}
+		}
+		
+		function iniQuestionData()
+		{
+			questionObj = $(".q-container");
+			questionCount = questionObj.length;
+			for(var i = 0; i < questionCount; i++)
+			{
+				qCache = false;
+				url = "getxml.php?type=q&qnum="+i;
+				qCache = getCompleteXML(url);	
+				//qCache = getCompleteXML(url);
+				questionList.push({qnum: i+1, qurl: url, qpage: 0, qtimer: 0, qanswer: 0, qsign: 0});
+				var qData = $(qCache.responseXML).find("item > value").eq(0).text();
+				if(qCache != -1)
+					questionObj.eq(i).children().html(qData);
+				else
+					questionObj.eq(i).children().html("");
+			}
+		}
+		function getAnswerSelection(num)
+		{
+			var str = '<div class="sign-container" >'+
+							'<div class="sign1" ></div>'+
+							'<div class="sign2" ></div>'+
+							'<div class="sign3" ></div>'+
+							'<div class="sign4" ></div>'+
+						'</div><div class="answer-container" >';
+			for(i = 1; i <= num; i++)
+			{
+				str += '<div class="slct_'+i+'" ></div>';
+			}
+			str += '</div>';
+			return str;
+		}
+		function setQuestion(qNum)
+		{
+			var wHeight = $(window).height();
+			var paginationObj = $("#question-pagination > #pagination-container .pgscroll");
+			qNum = qNum - 1;
+			if(qNum - 1 < 0) 
+				startQNum = 0;
+			else
+				startQNum = qNum - 1;
+			if(qNum + 1 > questionCount - 1) 
+				endQNum = questionCount - 1;
+			else
+				endQNum = qNum + 1;
+			currentQuestion = qNum;
+			
+			$("#inq-sign-container").stop().fadeOut(1);
+			
+			$("#temp-container").empty().html(questionObj.eq(qNum).children().html());
+			var virtualHeight = $("#temp-container").height();
+			if(wHeight*0.5 > virtualHeight)
+				virtualHeight = wHeight*0.5;
+			for(var i = 0; i < questionCount; i++)
+			{
+				questionObj.eq(i).attr("questionid",i+1);
+				var answers = getAnswerSelection(4);
+				paginationObj.append('<div class="item" questionid="'+(i+1)+'" id="pn_'+(i+1)+'" ><span>'+(i+1)+'</span><div>'+answers+'</div></div>');
+				$("#question-pagination > #pagination-container .pgscroll > #pn_"+(i+1)).bind("click",function(){
+					gotoQuestion($(this).attr("questionid"));
+					});
+				if(i >= startQNum && i <= endQNum)
+				{
+					if(i < qNum)
+					{
+						questionObj.eq(i).css({'z-index':'0','top':(wHeight*0.05)+'px','height':(wHeight*0.25)+'px',
+										'margin':'0 155px','width':'720px',
+										'opacity':'0.8','font-size':'12px'});
+					}
+					if(i == qNum)
+					{
+						questionObj.eq(i).css({'z-index':'100','top':((wHeight-virtualHeight)/2)+'px','height':virtualHeight+'px',
+										'margin':'0 5px','width':'1020px',
+										'opacity':'1','font-size':'15px'});
+					}
+					else if(i > qNum)
+					{
+						questionObj.eq(i).css({'z-index':'0','top':(wHeight*0.70)+'px','height':(wHeight*0.25)+'px',
+										'margin':'0 155px','width':'720px',
+										'opacity':'0.8','font-size':'12px'});
+					}
+				}
+				else
+				{
+					questionObj.eq(i).hide();
+				}
+			}
+			$("#question-pagination > #pagination-container .pgscroll > #pn_"+(qNum+1)).addClass("selected");
+			$(".answer-container > div").click(function() {
+				$(this).parent().children().not(this).removeClass("selected");
+				if($(this).hasClass("selected"))
+					$(this).removeClass("selected");
+				else
+					$(this).addClass("selected");
+				setAnswer($(this).parent());
+			});
+			
+			$(".sign-container > div").click(function() {
+				$(this).parent().children().not(this).removeClass("selected");
+				if($(this).hasClass("selected"))
+					$(this).removeClass("selected");
+				else
+					$(this).addClass("selected");
+				setSign($(this).parent());
+			});
+			
+			$("#inq-sign-container > div").click(function() {
+				$(this).parent().children().not(this).removeClass("selected");
+				if($(this).hasClass("selected"))
+					$(this).removeClass("selected");
+				else
+					$(this).addClass("selected");
+				setSign($(this).parent());
+			});
+		}
+		function setAnswer(obj)
+		{
+			var tempObj = obj.children("div");
+			var qid = obj.parent().parent().attr("questionid") - 1;
+			for(var i = 0; i < tempObj.length; i++)
+			{
+				if(tempObj.eq(i).hasClass("selected"))
+				{
+					questionList[qid].qanswer = i+1;
+					addLog('answer');
+					return;
+				}
+			}
+			questionList[qid].qanswer = 0;
+			addLog('answer');
+		}
+		function setSign(obj)
+		{
+			var tempObj = obj.children("div");
+			var qid = obj.parent().parent().attr("questionid");
+			var check;
+			if(qid === undefined)
+			{
+				qid = currentQuestion;
+				check = false;
+			}
+			else
+			{
+				qid = qid - 1;
+				check = true;
+			}
+			for(var i = 0; i < tempObj.length; i++)
+			{
+				if(tempObj.eq(i).hasClass("selected"))
+				{
+					questionList[qid].qsign = i+1;
+					if(check)
+					{
+						$("#inq-sign-container > div").removeClass("selected");
+						$("#inq-sign-container > div").eq(i).addClass("selected");
+					}
+					else
+					{
+						$("#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div").removeClass("selected");
+						$("#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div").eq(i).addClass("selected");
+					}
+					addLog('sign');
+					return;
+				}
+			}
+			if(check)
+				$("#inq-sign-container > div").removeClass("selected");
+			else
+				$("#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div").removeClass("selected");
+			questionList[qid].qsign = 0;
+			addLog('sign');
+		}
+		function nextQuestion() 
+		{
+			if(currentQuestion + 1 >= questionCount)
+				return;
+			gotoQuestion(currentQuestion + 2);
+		}
+		function prevQuestion() 
+		{
+			if(currentQuestion <= 0)
+				return;
+			gotoQuestion(currentQuestion);
+		}
+		function hideOthers(qNum)
+		{
+			if(qNum - 1 < 0) 
+				startQNum = 0;
+			else
+				startQNum = qNum - 1;
+			if(qNum + 1 > questionCount - 1) 
+				endQNum = questionCount - 1;
+			else
+				endQNum = qNum + 1
+				
+			for(var i = 0; i < questionCount; i++)
+			{
+				if(i >= startQNum && i <= endQNum)
+					questionObj.eq(i).show();
+				else
+					questionObj.eq(i).hide();
+			}
+		}
+		function gotoQuestion(qNum, resize)
+		{
+			if(!resize && currentQuestion == qNum-1)
+				return;
+			
+			if(currentQuestion + 2 < qNum)
+			{
+				var delay = 0;
+				for(i = currentQuestion + 2; i < qNum; i++)
+				{
+					setTimeout((function(num){return function(){
+							animateQuestion(num,50,true);
+							//console.log(num);
+						}
+					})(i)
+					,delay);
+					delay += 100;
+				}
+				setTimeout(function(){
+					animateQuestion(qNum,500);
+				},delay);
+			}
+			else if(currentQuestion > qNum)
+			{
+				var delay = 0;
+				for(i = currentQuestion; i > qNum; i--)
+				{
+					setTimeout((function(num){return function(){
+							animateQuestion(num,50,true);
+						}
+					})(i)
+					,delay);
+					delay += 100;
+				}
+				setTimeout(function(){
+					animateQuestion(qNum,500);
+				},delay);
+			}
+			else
+				animateQuestion(qNum);
+		}
+		function animateQuestion(qNum,speed, glance)
+		{
+			if(glance == null)
+				glance = false;
+			if(speed == null)
+				speed = 500;
+			var wHeight = $(window).height();
+			
+			if(currentQuestion < qNum)
+			{
+				questionObj.eq(currentQuestion+2).show();
+				questionObj.eq(currentQuestion+2).css({'top':(wHeight*1.0)+'px','height':(wHeight*0.25)+'px',
+										'margin':'0 155px','width':'720px','z-index':'0',
+										'opacity':'0.8','font-size':'12px'});
+			}
+			else 
+				questionObj.eq(currentQuestion-2).show();
+			
+			qNum = qNum - 1;
+			if(qNum - 1 < 0) 
+				startQNum = 0;
+			else
+				startQNum = qNum - 1;
+			if(qNum + 1 > questionCount - 1) 
+				endQNum = questionCount - 1;
+			else
+				endQNum = qNum + 1
+			
+			if(currentQuestion < qNum)
+			{
+				if(qNum - 2 >= 0) 
+				{
+					questionObj.eq(qNum - 2).show().animate({'top':(-wHeight*0.26)+'px','height':(wHeight*0.25)+'px',
+											'opacity':'0.3'},
+											speed
+										);
+				}
+			}
+			else
+			{
+				if(qNum + 2 <= questionCount - 1) 
+				{
+					questionObj.eq(qNum + 2).show().animate({'top':(wHeight*1.01)+'px','height':(wHeight*0.25)+'px',
+											'opacity':'0.3'},
+											speed
+										);
+				}
+			}
+			$("#question-pagination > #pagination-container .pgscroll > div").removeClass("selected");
+			$("#question-pagination > #pagination-container .pgscroll > #pn_"+(qNum+1)).addClass("selected");
+			if(!glance)
+			{
+				addLog('end');
+			}
+			currentQuestion = qNum;
+			
+				
+			/* ini signs */
+			$("#inq-sign-container").stop().fadeOut(300);
+			$("#inq-sign-container > div").removeClass("selected");
+			if(questionList[currentQuestion].qsign != 0)
+				$("#inq-sign-container > div").eq(questionList[currentQuestion].qsign-1).addClass("selected");
+			/* Threshold */
+			
+			clearTimeout(timerThreshold);
+			currentEnableQuestionTimer = -1;
+			if(!glance)
+			{
+				lastQuestion = currentQuestion;
+				timerThreshold = setTimeout(function(){
+					currentEnableQuestionTimer = qNum;
+					addLog('start');
+				},2000);
+			}
+			/* end */
+			
+			if(!glance)
+			{
+				$("#temp-container").empty().html(questionObj.eq(qNum).children().html());
+				var virtualHeight = $("#temp-container").height();
+				if(wHeight*0.5 > virtualHeight)
+					virtualHeight = wHeight*0.5;
+			}
+			else
+				virtualHeight = wHeight*0.5;
+			for(var i = 0; i < questionCount; i++)
+			{
+				if(i >= startQNum && i <= endQNum)
+				{
+					if(i < qNum)
+					{
+						//changeZIndex(i,100);
+						questionObj.eq(i).animate({'top':(wHeight*0.05)+'px','height':(wHeight*0.25)+'px',
+										'margin':'0 155px','width':'720px',
+										'opacity':'0.6','font-size':'12px',z:0},{step: function() {
+											$(this).css({'zIndex': ~~this.z});
+										},
+										duration: speed
+									});
+					}
+					else if(i == qNum)
+					{
+						questionObj.eq(i).animate({'top':((wHeight-virtualHeight)/2)+'px','height':virtualHeight+'px',
+										'margin':'0 5px','width':'1020px',
+										'opacity':'1','font-size':'15px',z:100},{step: function() {
+											$(this).css({'zIndex': ~~this.z});
+										},
+										duration: speed,
+										complete: function() {
+											if(!glance)
+											{
+												hideOthers(qNum);
+												setQuestionOverlay(qNum, 300);
+												$("#inq-sign-container").stop().delay(300).fadeIn(100);
+											}
+										}
+									});
+					}
+					else if(i > qNum)
+					{
+						questionObj.eq(i).animate({'top':(wHeight*0.70)+'px','height':(wHeight*0.25)+'px',
+										'margin':'0 155px','width':'720px',
+										'opacity':'0.6','font-size':'12px',z:0},{step: function() {
+											$(this).css({'zIndex': ~~this.z});
+										},
+										duration: speed
+									});
+					}
+				}
+				else
+				{
+					if(qNum - 2 != i && qNum + 2 != i)
+						questionObj.eq(i).hide();
+				}
+			}
+		}
+		function setQuestionOverlay(qNum, speed)
+		{
+			var wHeight = $(window).height();
+			var wWidth = $(window).width();
+			var qoTop = questionObj.eq(qNum).position().top;
+			var qoLeft = questionObj.eq(qNum).position().left;
+			var qoHeight = questionObj.eq(qNum).outerHeight();
+			var qoWidth = questionObj.eq(qNum).outerWidth();
+			var col1W, col2W, col3W;
+			var row1H, row2H, row3H;
+			
+			col2W = qoWidth;
+			col1W = (wWidth - col2W)/2;
+			col3W = (wWidth - col2W)/2;
+			
+			row1H = qoTop;
+			row2H = qoHeight;
+			row3H = wHeight - (row1H+row2H);
+			
+			$("#question-overlay .row1").stop().animate({'height':row1H+'px'},speed);
+			$("#question-overlay .row2").stop().animate({'height':row2H+'px'},speed);
+			$("#question-overlay .row2").stop().animate({'height':row2H+'px'},speed);	
+			
+			$("#question-overlay .col1").stop().animate({'width':col1W+'px'},speed);
+			$("#question-overlay .col2").stop().animate({'width':col2W+'px'},speed);
+			$("#question-overlay .col3").stop().animate({'width':col3W+'px'},speed);	
+			
+			
+		}
+		$("#add-question").click(function() {
+            $("#add-question-layout").fadeIn(300,function(){
+				url = "getxml.php?type=q&qnum="+currentQuestion;
+				qCache = getCompleteXML(url,true);
+				var qData = $(qCache.responseXML).find("item > value").eq(0).text();
+				if(qCache != -1)
+					$("#question-edit").editable("setHTML", qData, false);
+				else
+					$("#question-edit").editable("setHTML", "", false);
+			});
+        });
+		$("#add-question-layout > .form > .close").click(function() {
+			$.post("saveasxml.php",
+			{
+			  q_index:
+			  $("#question-edit").editable("getHTML", true, true),
+			  xmlid: currentQuestion
+			},
+			function(data,status){
+				$("#add-question-layout").fadeOut(300);
+				url = "getxml.php?type=q&qnum="+currentQuestion;
+				qCache = getCompleteXML(url,true);
+				var qData = $(qCache.responseXML).find("item > value").eq(0).text();
+				$(".q-container > .container").eq(currentQuestion).html(qData);
+			});
+        });
+		var xmlCache = new Array(); 
+		var xmlCounter = 1;
+		function checkCachedXML(url)
+		{
+			try
+			{
+				for(var i=1; i <= xmlCache.length ; i++)
+				{
+					if(xmlCache[i-1][1] == url)
+						return i;
+				}
+				return false;
+			}
+			catch(e)
+			{
+				return false;
+			}
+		}
+		function getCompleteXML(url, overwrite)
+		{
+			var tempCache = false;
+			if(overwrite == null)
+				overwrite = false;
+			tempCache = getXML(url, overwrite);
+			while(!tempCache)
+			{
+				tempCache = getXML(url);
+			}
+			return tempCache;
+		}
+		function getXML(url, overwrite)
+		{
+			if(overwrite == null)
+				overwrite = false;
+			var id=checkCachedXML(url);
+			if(id && !overwrite )
+			{
+				return xmlCache[id-1][0];
+			}
+			else
+			{
+				var xmlhttp;
+				if (window.XMLHttpRequest)
+				{// code for IE7+, Firefox, Chrome, Opera, Safari
+					xmlhttp=new XMLHttpRequest();
+				}
+				else
+				{// code for IE6, IE5
+					xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				xmlhttp.onreadystatechange=function()
+				{
+					if (xmlhttp.readyState==4 && xmlhttp.status==200)
+					{
+							if(!overwrite)
+							{
+								xmlCache.push([xmlhttp, url]);
+								xmlCounter++;
+							}
+							else
+							{
+								if(id)
+									xmlCache[id-1] = [xmlhttp, url];
+								else
+								{
+									xmlCache.push([xmlhttp, url]);
+									xmlCounter++;
+								}
+							}
+								
+					}
+					else if(xmlhttp.readyState==4)
+					{
+						if(!overwrite)
+						{
+							xmlCache.push([-1, url]);
+							xmlCounter++;
+						}
+						else
+						{
+							if(id)
+								xmlCache[id-1] = [-1, url];
+							else
+							{
+								xmlCache.push([-1, url]);
+								xmlCounter++;
+							}
+						}
+					}
+				}
+				var load_link = url;
+				xmlhttp.open("GET",load_link,false);
+				xmlhttp.send();
+				return false;
+			}
+			
+		}
+		/*var wheelCommand = 0;
+		var wheelInterval;
+		$("#question-overlay .row2 .col2").on('mousewheel', function(event) {
+			
+			wheelCommand = event.deltaY;
+
+		});
+		
+		wheelInterval = setInterval(function(){
+				if(wheelCommand < 0)
+				{
+					currentQuestion++;
+					if(currentQuestion > questionCount-1)
+						currentQuestion = questionCount-1;
+					if(currentQuestion < 0)
+						currentQuestion = 0;
+					animateQuestion(currentQuestion+1);
+				}
+				else if(wheelCommand > 0)
+				{
+					currentQuestion--;
+					if(currentQuestion > questionCount-1)
+						currentQuestion = questionCount-1;
+					if(currentQuestion < 0)
+						currentQuestion = 0;
+					animateQuestion(currentQuestion+1);
+				}
+				wheelCommand = 0;
+		},300);*/
+	</script>
+    <script >
+	$("#question-pagination > .title, #question-pagination > .toggle").click(function(){
+		if($("#question-pagination > .title").hasClass("close"))
+		{
+			$("#question-pagination > .title").css({'text-align':'right'});
+			$("#question-pagination > .filter").stop().fadeIn(300);
+			$("#question-pagination").stop().animate({'width':'207px'},300,function(){
+				$("#question-pagination > .title").removeClass("close").addClass("open");
+				$("#question-pagination > .title").html("Pagination");
+			});
+		}
+		else
+		{
+			$("#question-pagination > .title").html("P");
+			$("#question-pagination > .filter").stop().fadeOut(300);
+			$("#question-pagination .toggle").stop().animate({'width':'0px'},300);
+			$("#question-pagination").stop().animate({'width':'35px'},300,function(){
+				$("#question-pagination > .title").removeClass("open").addClass("close");
+			});
+		}
+	});
+	$("#question-pagination").mouseenter(function(){
+		if($(this).children(".title").hasClass("close"))
+		{
+			$("#question-pagination").stop().animate({'width':'42px'},300);
+			$("#question-pagination .toggle").stop().animate({'width':'7px'},300);
+		}
+	}).mouseleave(function(){
+		if($(this).children(".title").hasClass("close"))
+		{
+			$("#question-pagination").stop().animate({'width':'35px'},300);
+			$("#question-pagination .toggle").stop().animate({'width':'0px'},300);
+		}
+	});
+	$("#light-on-off").click(function(){
+		if($(this).hasClass("off"))
+		{
+			$("#question-overlay .overlaybg").stop().animate({'background-color':'rgba(0,0,0,0.75)'},100,function(){
+				$("#light-on-off").removeClass("off").addClass("on");
+			});
+		}
+		else
+		{
+			$("#question-overlay .overlaybg").stop().animate({'background-color':'transparent'},100,function(){
+				$("#light-on-off").removeClass("on").addClass("off");
+			});
+		}
+	});
+	$("#question-pagination > .filter > .arrow").click(function(){
+		if($("#question-pagination > .filter").hasClass("close"))
+		{
+			$("#question-pagination > .filter").stop().animate({'width':'200px'},300,function(){
+				$("#question-pagination > .filter").removeClass("close").addClass("open");
+			});
+			$("#question-pagination > .filter > .cont").stop().animate({'width':'163px'},300);
+		}
+		else
+		{
+			$("#question-pagination > .filter").stop().animate({'width':'70px'},300,function(){
+				$("#question-pagination > .filter").removeClass("open").addClass("close");
+			});
+			$("#question-pagination > .filter > .cont").stop().animate({'width':'35px'},300);
+		}
+	});
+	$("#question-pagination > .filter > .cont > div").click(function() {
+		$(this).parent().children().not(this).removeClass("selected");
+		if($(this).hasClass("selected"))
+			$(this).removeClass("selected");
+		else
+			$(this).addClass("selected");
+	});
+	
+	function showQuestionTimer()
+	{
+		if(currentEnableQuestionTimer == -1)
+		{
+			$("#question-timer > div").html("00:00:0");
+			$("#question-timer").stop().animate({'opacity':'0'},200);
+			return;
+		}
+		$("#question-timer").stop().animate({'opacity':'1'},200);
+		var timerValue = questionList[currentEnableQuestionTimer].qtimer;
+		var str = "";
+		var qmin = Math.floor(timerValue/600)+"";
+		var qsec = (Math.floor(timerValue/10)%60)+"";
+		var qmsec = Math.floor(timerValue%10)+"";
+		str += qmin.length < 2? "0"+qmin : qmin;
+		str += ":";
+		str += qsec.length < 2? "0"+qsec : qsec;
+		str += ":";
+		str += qmsec;
+		$("#question-timer > div").html(str);
+	}
+	
+	function sendQuestionEvents()
+	{
+		var str = "";
+		var arrSize = eventLogList.length;
+		for(var i = 0; i < arrSize; i++)
+		{
+			if(i == arrSize - 1)
+				str += eventLogList[i].qnum+"|"+eventLogList[i].qmode+"|"+eventLogList[i].val;
+			else
+				str += eventLogList[i].qnum+"|"+eventLogList[i].qmode+"|"+eventLogList[i].val+"<s>";
+		}
+		$.post("qeventlogger.php",
+		{
+		  datastr: str
+		},
+		function(data,status){
+		});
+	}
+	
+	mainInterval = setInterval(function(){
+		if(currentEnableQuestionTimer != -1)
+		{
+			questionList[currentEnableQuestionTimer].qtimer++;
+		}
+		showQuestionTimer();
+		currentTime++;
+		if(currentTime % 20 == 0)
+			sendQuestionEvents()
+	},100);
+</script>
+</body>
+</html>

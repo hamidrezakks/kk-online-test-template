@@ -1,0 +1,635 @@
+@charset "utf-8";
+/* CSS Document */
+div, ul, ui, li, span, p {
+	border: none;
+	margin: 0;
+	padding: 0;
+	font-family: "Myriad Set Pro","Lucida Grande","Helvetica Neue","Helvetica","Arial","Verdana","sans-serif";
+	font-size: 15px;
+}
+body {
+	direction: ltr;
+	background-color: #d3d2d1;
+	margin: 0;
+	padding: 0;
+	font-size: 15px;
+}
+#main-container {
+	width: 1030px;
+	margin: 0 auto;
+	overflow: hidden;
+	position: relative;
+}
+.q-container {
+	width: 1020px;
+	float: left;
+	box-shadow: 0 0 2px #999;
+	background-color: #fff;
+	opacity: 1;
+	position: absolute;
+	z-index: 100;
+	text-align: justify;
+	z-index: 0;
+	margin: 0 5px;
+	overflow: hidden;
+}
+.container {
+	padding: 5px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+}
+
+/* question pagination */
+#question-pagination {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	bottom: 10px;
+	width: 35px;
+	border-radius: 3px;
+	border: 1px solid #D6D0D0;
+	background-color: #f3f2f2;
+	z-index: 1000;
+	box-shadow: 0 0 1px #222;
+	overflow: hidden;
+}
+
+#question-pagination > .filter {
+	position: absolute;
+	height: 35px;
+	width: 70px;
+	margin: 3px 0 0 3px;
+	background-color: #333;
+	top: 0px;
+	left: 0px;
+	border-radius: 7px;
+	display: none;
+}
+
+#question-pagination > .filter.open {
+	width: 200px;
+}
+
+#question-pagination > .filter > .cont {
+	height: 35px;
+	width: 35px;
+	float: right;
+	background-color: #7d7d7d;
+	border-radius: 7px;
+	overflow: hidden;
+}
+
+#question-pagination > .filter.open > .cont {
+	width: 163px;
+}
+
+#question-pagination > .filter > .cont > div {
+	background-image: url('../image/testicon.png');
+	width: 29px;
+	height: 29px;
+	margin: 3px 0px 3px 3px;
+	float: left;
+	opacity: 0.6;
+	cursor: pointer;
+}
+
+#question-pagination > .filter > .cont > div:hover {
+	opacity: 1;
+}
+
+#question-pagination > .filter.open > .cont > div.sign1 {
+	background-position: -9px -17px;
+}
+
+#question-pagination > .filter.open > .cont > div.sign2 {
+	background-position: -39px -17px;
+}
+
+#question-pagination > .filter.open > .cont > div.sign3 {
+	background-position: -73px -17px;
+}
+
+#question-pagination > .filter.open > .cont > div.sign4 {
+	background-position: -105px -17px;
+}
+
+#question-pagination > .filter.open > .cont > div.sign1.selected ,
+#question-pagination > .filter.close > .cont > div.sign1 {
+	background-position: -9px -49px;
+}
+
+#question-pagination > .filter.open > .cont > div.sign2.selected ,
+#question-pagination > .filter.close > .cont > div.sign2 {
+	background-position: -40px -49px;
+}
+
+#question-pagination > .filter.open > .cont > div.sign3.selected ,
+#question-pagination > .filter.close > .cont > div.sign3 {
+	background-position: -73px -49px;
+}
+
+#question-pagination > .filter.open > .cont > div.sign4.selected ,
+#question-pagination > .filter.close > .cont > div.sign4 {
+	background-position: -105px -49px;
+}
+
+#question-pagination > .filter.close > .cont > div {
+	display: none;
+}
+
+#question-pagination > .filter.close > .cont > div.selected {
+	display: block;
+	opacity: 1;
+}
+#question-pagination > .filter.open > .cont > div {
+	display: block;
+}
+
+#question-pagination > .filter > .arrow {
+	height: 20px;
+	width: 10px;
+	float: left;
+	margin: 8px 0 7px 15px;
+	background-image: url('../image/testicon.png');
+	background-position: -144px -22px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	position: relative;
+	transform: rotate(0deg);
+	transition: all 0.3s;
+}
+#question-pagination > .filter.open > .arrow {
+	transform: rotate(90deg);
+}
+
+#question-pagination > .title {
+	color: #444;
+	font-weight: bold;
+	background-color: #d3d2d1;
+	text-align: center;
+	padding: 10px 10px;
+	height: 21px;
+	cursor: pointer;
+}
+
+
+#question-pagination > .toggle {
+	background-color: rgba(0,0,0,0.5);
+	position: absolute;
+	top: 41px;
+	right: 0;
+	bottom: 0;
+	width: 0;
+	z-index: 1001;
+	overflow: hidden;
+	cursor: w-resize;
+}
+
+#question-pagination .toggle > div {
+	position: absolute;
+	top: 50%;
+	right: 1px;
+	height: 20px;
+	width: 4px;
+	margin: -10px 0 0 0;
+	background-image: url('../image/testicon.png');
+	background-position: -567px -138px;
+}
+
+#question-pagination > #pagination-container {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	top: 41px;
+	width: 400px;
+	border: 1px solid #eee;
+}
+
+#question-pagination > #pagination-container .pgscroll {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	top: 0;
+	right: 0;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item {
+	height: 33px;
+	width: 100%;
+	margin: 0 0 1px 0;
+	padding: 0;
+	background-color: #d9d9d9;
+	transition: all 0.3s;
+	position: relative;
+	cursor: pointer;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item.selected {
+	height: 55px;
+	background-color: #c8e7e8;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item > span {
+	height: 15px;
+	padding: 9px 0;
+	text-align: center;
+	color: #636363;
+	background-color:#eee;
+	width: 35px;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1002;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > span {
+	background-color:#a3c5db;
+	color: #fff;
+	height: 15px;
+	padding: 20px 0;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item > div {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	padding: 5px;
+	color: #eee;
+	overflow: hidden;
+}
+#question-pagination > #pagination-container .pgscroll > .item > div > .answer-container {
+	position:absolute;
+	top: 12px;
+	left: 78px;
+	width: 150px;
+	padding: 0 0px;
+	transition: height 0.3s;
+	opacity: 0.7;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .answer-container {
+	top: 10px;
+	left: 61px;
+	width: 150px;
+	opacity: 1;
+}
+.answer-container > div {
+	height: 10px;
+	width: 18px;
+	border-radius: 5px;
+	float: left;
+	margin: 0 14px 5px 0;
+	background-color: #fff;
+	background-image: url('../image/select-fill.png');
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	transition: all 0.5s;
+	box-shadow: 0 1px 1px #aaa;
+	/*box-shadow: 0 0 1px #fff;*/
+}
+.answer-container > div:hover {
+	background-color: #aaa;
+	/*box-shadow: 0 0 1px #fff;*/
+}
+.answer-container > div.selected {
+	background-position: -75px 0;
+}
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container {
+	position:absolute;
+	top: 2px;
+	left: 38px;
+	width: 35px;
+	height: 35px;
+	padding: 0 0px;
+	transition: height 0.3s;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container {
+	top: 25px;
+	left: 53px;
+	width: 150px;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container > div {
+	display: none;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container > div.selected,
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div {
+	display: block;
+}
+
+.sign-container > div {
+	height: 29px;
+	width: 29px;
+	background-image: url('../image/testicon.png');
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	float: left;
+	cursor: pointer;
+	margin: 0 0 0 3px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign1 {
+	background-position: -9px -17px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign1:hover {
+	background-position: -9px -49px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign2 {
+	background-position: -39px -17px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign2:hover {
+	background-position: -40px -49px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign3 {
+	background-position: -73px -17px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign3:hover {
+	background-position: -73px -49px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign4 {
+	background-position: -105px -17px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign4:hover {
+	background-position: -105px -49px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign1.selected,
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container > div.sign1 {
+	background-position: -9px -49px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign2.selected,
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container > div.sign2 {
+	background-position: -40px -49px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign3.selected,
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container > div.sign3 {
+	background-position: -73px -49px;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.sign4.selected,
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container > div.sign4 {
+	background-position: -105px -49px;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item > div > .sign-container > div {
+	opacity: 0.75;
+}
+
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div {
+	opacity: 0.6;
+}
+#question-pagination > #pagination-container .pgscroll > .item.selected > div > .sign-container > div.selected {
+	opacity: 1;
+}
+
+#add-question {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	padding: 5px 15px;
+	color: #444;
+	font-weight: bold;
+	background-color: #eee;
+	cursor: pointer;
+	z-index: 1000;
+}
+	
+#add-question-layout {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(0,0,0,0.85);
+	z-index: 1001;
+	display: none;
+}
+
+#add-question-layout .form {
+	position: absolute;
+	width: 1010px;
+	height: 580px;
+	background-color: #fff;
+	border:1px solid #eaeaea;
+	margin: -300px -515px 0 0;
+	top: 50%;
+	right: 50%;
+	padding: 10px;
+	font-size: 15px;
+}
+
+#add-question-layout .form .close {
+	position: absolute;
+	color: #333;
+	font-size: 15px;
+	font-weight: bold;
+	height: 15px;
+	width: 30px;
+	padding: 7px 0;
+	text-align: center;
+	background-color: #ddd;
+	top: 0;
+	right: 0;
+	cursor: pointer;
+}
+
+#addq-scroll {
+	width: 780px;
+	height: 530px;
+}
+
+/* question ovelay */
+#question-overlay {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 900;
+}
+
+#question-overlay > .row1 {
+	width: 100%;
+	height: 33%;
+	float: left;
+}
+
+#question-overlay > .row2 {
+	width: 100%;
+	height: 34%;
+	float: left;
+}
+
+#question-overlay > .row3 {
+	width: 100%;
+	height: 33%;
+	float: left;
+}
+
+#question-overlay .col1 {
+	width: 33%;
+	height: 100%;
+	float: left;
+}
+
+#question-overlay .col2 {
+	width: 34%;
+	height: 100%;
+	float: left;
+	position: relative;
+}
+
+#question-overlay .col3 {
+	width: 33%;
+	height: 100%;
+	float: left;
+}
+
+#question-overlay > .row2 > .col3 {
+	float: right;
+}
+
+#question-overlay > .row2 > .col2 > .timer {
+	position: absolute;
+	height: 30px;
+	width: 100px;
+	top: -25px;
+	right: 50px;
+	background-color: #fff;
+	border-radius: 3px;
+	opacity: 0;
+}
+
+#question-overlay > .row2 > .col2 > .timer > div {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding: 3px 0;
+	background-color: rgb(0,93,98);
+	border-radius: 3px;
+	border: 2px solid #eee;
+	color: #eee;
+	font-size: 20px;
+	text-align: center;
+	opacity: 0.3;
+	transition: opacity 0.2s;
+}
+
+#question-overlay > .row2 > .col2 > .timer > div:hover {
+	opacity: 1;
+}
+
+#question-overlay > .row2 > .col2 > #inq-sign-container {
+	position: absolute;
+	left: 30px;
+	top: -30px;
+	width: 200px;
+	height: 35px;
+}
+
+#inq-sign-container > div {
+	height: 35px;
+	width: 35px;
+	margin: 0 10px 0 0;
+	float: left;
+	background-color: #fafafa;
+	box-shadow: 0 0 1px #555;
+	border-radius: 3px;
+}
+
+#inq-sign-container > div > div {
+	height: 29px;
+	width: 29px;
+	margin: 3px;
+	background-image: url('../image/testicon.png');
+	background-repeat: no-repeat;
+}
+
+#inq-sign-container > div.sign1 > div {
+	background-position: -9px -17px;
+}
+#inq-sign-container > div.sign2 > div {
+	background-position: -39px -17px;
+}
+#inq-sign-container > div.sign3 > div {
+	background-position: -73px -17px;
+}
+#inq-sign-container > div.sign4 > div {
+	background-position: -105px -17px;
+}
+#inq-sign-container > div.sign1:hover > div ,
+#inq-sign-container > div.sign1.selected > div {
+	background-position: -9px -49px;
+}
+#inq-sign-container > div.sign2:hover > div ,
+#inq-sign-container > div.sign2.selected > div {
+	background-position: -40px -49px;
+}
+#inq-sign-container > div.sign3:hover > div ,
+#inq-sign-container > div.sign3.selected > div {
+	background-position: -73px -49px;
+}
+#inq-sign-container > div.sign4:hover > div ,
+#inq-sign-container > div.sign4.selected > div {
+	background-position: -105px -49px;
+}
+
+#inq-sign-container > div > div {
+	opacity: 0.50;
+}
+
+#inq-sign-container > div.selected > div {
+	opacity: 1;
+}
+
+#question-overlay .overlaybg {
+	background-color: transparent;
+}
+
+#light-on-off {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	height: 50px;
+	width: 50px;
+	border-radius: 3px;
+	background-color: #eee;
+	z-index: 1000;
+	box-shadow: 0 0 1px #333;
+	cursor: pointer;
+}
+
+#light-on-off > div{
+	margin: 7px 9px;
+	height: 35px;
+	width: 32px;
+	background-image: url('../image/testicon.png');
+	background-repeat: no-repeat;
+}
+#light-on-off.off > div{
+	background-position: -514px -135px;
+	margin: 7px 9px;
+	width: 32px;
+}
+#light-on-off.off:hover > div{
+	background-position: -547px -135px;
+	margin: 7px 16px;
+	width: 18px;
+}
+#light-on-off.on > div{
+	background-position: -547px -135px;
+	margin: 7px 16px;
+	width: 18px;
+}
+#light-on-off.on:hover > div{
+	background-position: -514px -135px;
+	margin: 7px 9px;
+	width: 32px;
+}
+
+/* end */
